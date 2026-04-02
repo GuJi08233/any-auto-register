@@ -386,6 +386,35 @@ CAMOUFOX_VERSION=135.0.1 CAMOUFOX_RELEASE=beta.24 docker compose build app
 - 若依赖 `conda`、Go 或 Windows 可执行文件，不建议直接在当前 Linux 容器中启动这些插件
 - 如果你只需要 Web UI、账号管理、任务调度和本地 Solver，当前 Compose 配置可直接使用
 
+### 使用 GitHub Actions 发布到 GitHub Packages
+
+仓库已提供工作流：
+
+```text
+.github/workflows/docker-publish.yml
+```
+
+默认发布行为：
+
+- 推送到 `main` / `master` 时，构建并推送 `ghcr.io/<owner>/<repo>`
+- 推送 `v*` 标签时，额外生成语义化版本标签
+- 提交 Pull Request 时，只验证构建，不推送镜像
+- 支持在 GitHub Actions 页面手动触发 `workflow_dispatch`
+
+当前工作流直接复用根目录 `Dockerfile`，因此镜像内容与本地 `docker compose build app` 一致。
+
+### 发布前注意事项
+
+- 当前 `Dockerfile` 内部固定下载 `go1.24.2.linux-amd64.tar.gz`，工作流因此固定构建 `linux/amd64`
+- 发布到 GitHub Container Registry 使用的是 `GITHUB_TOKEN`，通常**不需要额外配置仓库 Secret**
+- 如果你之前手工往同名 `ghcr.io/<owner>/<repo>` 包推送过镜像，且该包**没有关联当前仓库**，首次发布可能会因为权限问题失败；此时需要到 GitHub Packages 页面手动关联仓库，或删除旧包后重试
+
+### 拉取示例
+
+```bash
+docker pull ghcr.io/<你的 GitHub 用户名或组织名>/<你的仓库名>:latest
+```
+
 ## 插件与外部依赖
 
 ### 临时邮箱方案来源
