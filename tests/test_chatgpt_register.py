@@ -167,7 +167,7 @@ class RegistrationEngineFlowTests(unittest.TestCase):
             mock.patch.object(engine, "_send_verification_code", return_value=True) as send_otp, \
             mock.patch.object(engine, "_get_verification_code", return_value="123456") as get_otp, \
             mock.patch.object(engine, "_validate_verification_code", return_value=True) as validate_otp, \
-            mock.patch.object(engine, "_create_user_account", return_value=True) as create_account, \
+            mock.patch.object(engine, "_create_user_account", return_value=(True, False)) as create_account, \
             mock.patch.object(engine, "_restart_login_flow", side_effect=fake_restart_login_flow) as restart_login, \
             mock.patch.object(engine, "_complete_token_exchange", side_effect=fake_complete_token_exchange) as complete_exchange:
             result = engine.run()
